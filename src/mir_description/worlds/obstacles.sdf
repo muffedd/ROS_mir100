@@ -129,5 +129,47 @@
         </visual>
       </link>
     </model>
+    <!-- Extra furniture blocks make the practice course moderately challenging
+         while leaving broad routes around each obstacle. -->
+    <model name="box_4">
+      <static>true</static>
+      <pose>0.0 1.9 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.9 0.7 0.9</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.9 0.7 0.9</size></box></geometry><material><ambient>0.65 0.45 0.2 1</ambient><diffuse>0.65 0.45 0.2 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="box_5">
+      <static>true</static>
+      <pose>0.2 -2.0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.7 0.9 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.7 0.9 1.0</size></box></geometry><material><ambient>0.2 0.55 0.6 1</ambient><diffuse>0.2 0.55 0.6 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="box_6">
+      <static>true</static>
+      <pose>6.5 2.0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>1.0 0.8 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>1.0 0.8 1.0</size></box></geometry><material><ambient>0.65 0.3 0.55 1</ambient><diffuse>0.65 0.3 0.55 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="box_7">
+      <static>true</static>
+      <pose>6.7 -2.0 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.7 0.8 0.9</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.7 0.8 0.9</size></box></geometry><material><ambient>0.7 0.55 0.15 1</ambient><diffuse>0.7 0.55 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="box_8">
+      <static>true</static>
+      <pose>8.4 0.0 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.8 0.8 0.8</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.8 0.8 0.8</size></box></geometry><material><ambient>0.3 0.55 0.25 1</ambient><diffuse>0.3 0.55 0.25 1</diffuse></material></visual>
+      </link>
+    </model>
   </world>
 </sdf>

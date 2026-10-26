@@ -48,7 +48,7 @@ The launcher keeps this local simulation awake and independent of Wi-Fi changes.
 3. Click free space in the room and drag to select the final heading.
 4. Release to send the goal. Click another goal to replace it.
 
-The launch creates a live SLAM map. No fixed goal is sent automatically. The bounded room contains three obstacles. A* chooses a route around mapped obstacles. Pure pursuit turns toward the route and slows for bends. The robot keeps a route until a new goal arrives or the controller reports a blocked path, then replans.
+The launch creates a live SLAM map. No fixed goal is sent automatically. The bounded practice room contains eight static obstacles of different sizes, with open routes between them. A* chooses a route around mapped obstacles. Pure pursuit turns toward the route and slows for bends. The robot keeps a route until a new goal arrives or the controller reports a blocked path, then replans.
 
 Stop the launch with **Ctrl+C** before starting another instance.
 

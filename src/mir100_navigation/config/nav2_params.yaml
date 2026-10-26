@@ -9,7 +9,8 @@ controller_server:
     controller_frequency: 12.0
     FollowPath:
       plugin: nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
-      desired_linear_vel: 0.3
+      # Faster default while retaining collision and curvature speed regulation.
+      desired_linear_vel: 0.45
       lookahead_dist: 0.5
       min_lookahead_dist: 0.3
       max_lookahead_dist: 0.7
