@@ -38,6 +38,7 @@ def generate_launch_description():
     y = LaunchConfiguration("y")
     z = LaunchConfiguration("z")
     yaw = LaunchConfiguration("yaw")
+    gui = LaunchConfiguration("gui")
     use_sim_time = LaunchConfiguration("use_sim_time")
 
     gazebo_launch = PathJoinSubstitution(
@@ -72,6 +73,11 @@ def generate_launch_description():
             DeclareLaunchArgument("z", default_value="0.15"),
             DeclareLaunchArgument("yaw", default_value="0.0"),
             DeclareLaunchArgument("use_sim_time", default_value="true"),
+            DeclareLaunchArgument(
+                "gui",
+                default_value="true",
+                description="Launch the Gazebo GUI client; set false for headless runs.",
+            ),
             DeclareLaunchArgument("goal_x", default_value="6.0"),
             DeclareLaunchArgument("goal_y", default_value="0.0"),
             DeclareLaunchArgument("goal_yaw", default_value="0.0"),
@@ -85,6 +91,7 @@ def generate_launch_description():
                     "y": y,
                     "z": z,
                     "yaw": yaw,
+                    "gui": gui,
                 }.items(),
             ),
             Node(
@@ -96,6 +103,7 @@ def generate_launch_description():
                     "/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist",
                     "/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry",
                     "/back_scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+                    "/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model",
                 ],
                 output="screen",
             ),

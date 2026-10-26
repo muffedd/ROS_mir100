@@ -16,6 +16,8 @@ The generic Nav2 panel may show **Localization: inactive** because this launch u
 
 These results cover the simulated static room. Physical hardware, moving people, and recovery after deliberately forcing the laptop to suspend are not verified. Restart the simulation after deliberate suspend. [The historical heartbeat failure](docs/second-goal-heartbeat-timeout.json) is retained for comparison.
 
+Tested on Ubuntu 24.04, ROS 2 Jazzy and Gazebo Harmonic. If `colcon build` fails with `option --editable not recognized` (seen with setuptools 80+ in conda/robostack environments), run `pip install "setuptools==72.2.0"` and rebuild.
+
 ## Install and build
 
 Ubuntu 24.04 with ROS 2 Jazzy and Gazebo Harmonic:
@@ -51,6 +53,26 @@ The launcher keeps this local simulation awake and independent of Wi-Fi changes.
 The launch creates a live SLAM map. No fixed goal is sent automatically. The bounded practice room contains eight static obstacles of different sizes, with open routes between them. A* chooses a route around mapped obstacles. Pure pursuit turns toward the route and slows for bends. The robot keeps a route until a new goal arrives or the controller reports a blocked path, then replans.
 
 Stop the launch with **Ctrl+C** before starting another instance.
+
+## Headless run
+
+On machines without a display or with limited CPU, skip the Gazebo GUI client:
+
+```bash
+GZ_IP=127.0.0.1 ros2 launch mir100_navigation slam_navigation.launch.py gui:=false launch_rviz:=false
+```
+
+`gui` defaults to `true` and is also available on `mir_description`'s `gazebo.launch.py`.
+
+## Harder world (navigation test pending)
+
+`mir_description/worlds/hard_world.sdf` is a harder test map: three rooms joined by S-shaped corridors (1.9 m wide) with 1.5 m doorways and three dead ends. It is included so you can inspect and launch it, but the robot has **not** completed a navigation run on it yet.
+
+```bash
+ros2 launch mir100_navigation slam_navigation_hardtest.launch.py gui:=false launch_rviz:=false
+```
+
+Drop the two `false` arguments to open Gazebo and RViz. Status: the latest attempt stopped during startup with transform/clock timing errors, still under investigation. The verified world is the obstacle room above. This launch uses a conservative collision radius (0.60 m) from `mir100_navigation/config/nav2_params_hardtest.yaml`.
 
 ## Save a map
 
