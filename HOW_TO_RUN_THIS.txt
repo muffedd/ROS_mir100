@@ -1,0 +1,152 @@
+================================================================
+HOW TO RUN THIS - MiR100 navigation in Gazebo (ROS 2 Jazzy)
+Repo: https://github.com/muffedd/ROS_mir100
+================================================================
+
+All commands are for Linux (bash). No code edits are needed; a fresh
+download builds and runs with the commands below.
+
+----------------------------------------------------------------
+0. WHAT YOU NEED FIRST (prerequisites)
+----------------------------------------------------------------
+Intended setup: Ubuntu 24.04 with ROS 2 Jazzy and Gazebo Harmonic.
+Honest note: this project was developed and tested inside a
+robostack (micromamba) Jazzy + Harmonic environment. The apt
+commands below are the standard native Ubuntu 24.04 path; that
+exact path has not been run end-to-end by the author.
+
+If ROS 2 Jazzy is not installed yet, follow the official guide first:
+  https://docs.ros.org/en/jazzy/Installation.html
+(desktop install + "ros-dev-tools"). Gazebo Harmonic is the default
+Gazebo for Jazzy; the ros-gz package below connects them.
+
+----------------------------------------------------------------
+1. INSTALL DEPENDENCIES AND BUILD
+----------------------------------------------------------------
+sudo apt update
+sudo apt install python3-colcon-common-extensions \
+  ros-jazzy-ros-gz ros-jazzy-navigation2 ros-jazzy-nav2-bringup \
+  ros-jazzy-slam-toolbox ros-jazzy-robot-localization ros-jazzy-ros2launch
+
+git clone https://github.com/muffedd/ROS_mir100.git
+cd ROS_mir100
+source /opt/ros/jazzy/setup.bash
+colcon build --symlink-install --base-paths src --packages-select mir_description mir100_navigation
+source install/setup.bash
+
+You must run "source /opt/ros/jazzy/setup.bash" BEFORE colcon build,
+and "source install/setup.bash" AFTER every build and in every new
+terminal you use.
+
+Conda/robostack users only: if colcon build fails with
+"option --editable not recognized" (setuptools 80+), run
+  pip install "setuptools==72.2.0"
+and rebuild.
+
+----------------------------------------------------------------
+2. RUN THE OBSTACLE ROOM (the verified world)
+----------------------------------------------------------------
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+./scripts/run_mir100.sh
+
+Gazebo and RViz open. Wait for the map and the laser scans to appear,
+then click "Nav2 Goal" in the RViz toolbar and drag on the map to set
+a destination. The robot plans around obstacles and drives there.
+
+Verified status (exact): consecutive goals returned Nav2 SUCCEEDED
+with the PREVIOUS, simpler robot model. With the current detailed
+mir100_ref model, a clean-clone build and Gazebo spawn are verified;
+the full navigation regression has not been re-run on this model yet.
+
+To re-run the automated goal test (after the sim is up):
+ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST python3 scripts/test_navigation.py --goals 6,0 6,2
+
+----------------------------------------------------------------
+3. RUN THE HARDER WORLD (navigation test PENDING - not a ready demo)
+----------------------------------------------------------------
+ros2 launch mir100_navigation slam_navigation_hardtest.launch.py gui:=false launch_rviz:=false
+
+Drop the two "false" arguments to open Gazebo and RViz.
+This launches the three-room maze world and spawns the robot at the
+start pose. Status: the robot builds and spawns correctly, but the
+autonomous navigation run still stops with transform/scan timing
+errors and is being fixed. Use it to inspect the world and robot,
+not to demo navigation. It uses a conservative collision radius
+(0.60 m) from config/nav2_params_hardtest.yaml.
+
+----------------------------------------------------------------
+4. SAVE A MAP (optional)
+----------------------------------------------------------------
+The launches build the map LIVE with SLAM Toolbox; no map file is
+loaded at startup. To save what SLAM built, in another terminal:
+  bash src/mir100_navigation/scripts/save_map.sh
+The saved map lands in src/mir100_navigation/maps/.
+
+----------------------------------------------------------------
+5. WHERE EVERYTHING LIVES (all paths relative to ROS_mir100/)
+----------------------------------------------------------------
+Robot model (URDF/xacro):
+  src/mir_description/urdf/mir100_ref.urdf.xacro   <- detailed model, Gazebo default
+  src/mir_description/urdf/mir.urdf.xacro          <- classic model
+  src/mir_description/urdf/mir_ros2.urdf.xacro
+  src/mir_description/urdf/include/                <- shared xacro pieces (sensors, transmissions)
+
+Robot meshes (STL):
+  src/mir_description/meshes/visual/mir_100_base.stl        <- stock DFKI body shell
+  src/mir_description/meshes/visual/mirref/band.stl         <- detailed model parts
+  src/mir_description/meshes/visual/mirref/corner_caps.stl     (band, corner caps,
+  src/mir_description/meshes/visual/mirref/front_details.stl    front details, top holes)
+  src/mir_description/meshes/visual/mirref/top_holes.stl
+  src/mir_description/meshes/visual/sick_lms-100.stl        <- laser scanner
+  src/mir_description/meshes/visual/wheel.stl, caster_wheel_base.stl
+  src/mir_description/meshes/collision/                     <- simplified collision meshes
+
+Gazebo worlds (scene descriptions, SDF - these are NOT occupancy maps):
+  src/mir_description/worlds/obstacles.sdf   <- the verified obstacle room
+  src/mir_description/worlds/hard_world.sdf  <- harder maze (navigation pending)
+  src/mir_description/worlds/empty.sdf
+  src/mir_description/worlds/gen_hard_world.py <- regenerates hard_world.sdf byte-identically
+
+Packages (the two ROS 2 packages you build):
+  src/mir_description/      <- model, meshes, worlds, Gazebo spawn launch
+  src/mir100_navigation/    <- SLAM + Nav2 stack, launches, configs, tests
+
+Launch files:
+  src/mir_description/launch/gazebo.launch.py                  <- spawn robot in a world
+  src/mir100_navigation/launch/slam_navigation.launch.py       <- full stack, obstacle room
+  src/mir100_navigation/launch/slam_navigation_hardtest.launch.py <- full stack, hard maze
+
+Navigation configuration:
+  src/mir100_navigation/config/nav2_params.yaml          <- Nav2, obstacle room
+  src/mir100_navigation/config/nav2_params_hardtest.yaml <- Nav2, hard maze (radius 0.60 m)
+  src/mir100_navigation/config/slam_toolbox.yaml         <- SLAM
+  src/mir100_navigation/config/ekf.yaml                  <- odometry fusion
+  src/mir100_navigation/rviz/navigation.rviz             <- RViz layout
+
+Occupancy map (a grid map SAVED from an earlier run - different from a world SDF):
+  src/mir100_navigation/maps/mir100_world.pgm / .yaml
+  Not loaded by the launches (SLAM builds a fresh map live); kept as an example.
+
+Scripts:
+  scripts/run_mir100.sh        <- one-command launcher (holds a sleep inhibitor)
+  scripts/test_navigation.py   <- automated goal test
+  src/mir100_navigation/scripts/save_map.sh
+
+Docs and test evidence:
+  README.md, docs/TESTING.md, docs/*.json, docs/rviz-navigation.png
+
+NOT in this repo: mir100_assembled.stl (a single-piece export of the
+assembled robot for viewing/3D printing) is shared separately on Google
+Drive, because the repo carries the model as separate part meshes.
+
+----------------------------------------------------------------
+6. TYPICAL SESSION (startup order, 3 terminals)
+----------------------------------------------------------------
+Terminal 1: source /opt/ros/jazzy/setup.bash && source install/setup.bash && ./scripts/run_mir100.sh
+Terminal 2 (optional goal test): same two source lines, then the test_navigation.py command from section 2
+Terminal 3 (optional map save): bash src/mir100_navigation/scripts/save_map.sh
+
+Known harmless warnings: a few startup TF warnings before the first
+transform, and one RViz texture-unit message on the first map frame.
+Both clear on their own; wait for the map and active navigation.
