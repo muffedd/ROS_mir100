@@ -83,12 +83,17 @@ sweep along every leg, exact distance vs all 65 wall boxes)
   swept-GT checks above are the trajectory evidence.
 
 WHAT THIS ESTABLISHES
-- The model itself is validated separately (see
-  docs/MODEL_VALIDATION.txt: mass accounting, straight-line and
-  turn odometry vs ground truth).
+- Model characterization to date (docs/MODEL_VALIDATION.txt): mass
+  accounting and straight-line odometry match ground truth closely;
+  turn tests found the body UNDER-rotates vs wheels (147 deg on a
+  first turn, 164 deg steady-state, vs 175 deg at the wheels -
+  consistent with caster scrub, cause not proven). Single operating
+  points only; the model is partially characterized, not blanket
+  validated.
 - On both trials the first legs were physically reached (GT
   confirmed), and no trajectory came closer than 9.2 cm to any wall
-  geometry. No contact is evidenced anywhere in either run.
+  geometry. Contact sensors do not exist in this world, so absence
+  of contact is supported only by this geometric margin evidence.
 - Hard-world guided navigation is NOT validated: neither trial
   completed the route, recovery budgets were exceeded, and the
   controller's refusal cause is undetermined without costmap
@@ -105,8 +110,8 @@ REMAINING LIMITS
   not claimed. Swept clearance is sampled at 55.6 Hz with <= 0.42
   deg yaw steps (rotation-arc residual ~0.02 mm), not a continuous
   mathematical proof.
-- Per the user's decision (2026-10-26), retries are stopped; both
-  failures are preserved as the final state of this work.
+- Testing was stopped after one bounded retry per route (2026-10-26);
+  both failures are preserved as the final state of this work.
 
 EVIDENCE MANIFEST (scripts/recorded_run/)
 - TEST_CRITERIA.md: pre-registered criteria (fixed before the runs)
