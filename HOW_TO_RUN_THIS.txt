@@ -3,8 +3,11 @@ HOW TO RUN THIS - MiR100 navigation in Gazebo (ROS 2 Jazzy)
 Repo: https://github.com/muffedd/ROS_mir100
 ================================================================
 
-All commands are for Linux (bash). No code edits are needed; a fresh
-download builds and runs with the commands below.
+All commands are for Linux (bash). No code edits are needed.
+Verified on a fresh download in the tested environment: the project
+BUILDS and the robot SPAWNS in Gazebo. Autonomous navigation status
+per world is stated exactly in sections 2 and 3 - read those before
+demoing anything.
 
 ----------------------------------------------------------------
 0. WHAT YOU NEED FIRST (prerequisites)
@@ -13,7 +16,8 @@ Intended setup: Ubuntu 24.04 with ROS 2 Jazzy and Gazebo Harmonic.
 Honest note: this project was developed and tested inside a
 robostack (micromamba) Jazzy + Harmonic environment. The apt
 commands below are the standard native Ubuntu 24.04 path; that
-exact path has not been run end-to-end by the author.
+exact path has not been run end-to-end by the author, so treat it
+as the intended setup, not a guaranteed one.
 
 If ROS 2 Jazzy is not installed yet, follow the official guide first:
   https://docs.ros.org/en/jazzy/Installation.html
@@ -36,7 +40,8 @@ source install/setup.bash
 
 You must run "source /opt/ros/jazzy/setup.bash" BEFORE colcon build,
 and "source install/setup.bash" AFTER every build and in every new
-terminal you use.
+terminal you use. Every command below assumes you are inside the
+ROS_mir100 folder with both source lines already run.
 
 Conda/robostack users only: if colcon build fails with
 "option --editable not recognized" (setuptools 80+), run
@@ -44,7 +49,7 @@ Conda/robostack users only: if colcon build fails with
 and rebuild.
 
 ----------------------------------------------------------------
-2. RUN THE OBSTACLE ROOM (the verified world)
+2. RUN THE OBSTACLE ROOM
 ----------------------------------------------------------------
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
@@ -52,15 +57,21 @@ source install/setup.bash
 
 Gazebo and RViz open. Wait for the map and the laser scans to appear,
 then click "Nav2 Goal" in the RViz toolbar and drag on the map to set
-a destination. The robot plans around obstacles and drives there.
+a destination. Expected behavior: the robot plans around obstacles
+and drives there.
 
-Verified status (exact): consecutive goals returned Nav2 SUCCEEDED
-with the PREVIOUS, simpler robot model. With the current detailed
-mir100_ref model, a clean-clone build and Gazebo spawn are verified;
-the full navigation regression has not been re-run on this model yet.
+Verified status (exact): with the PREVIOUS, simpler robot model,
+consecutive goals in this room returned Nav2 SUCCEEDED. With the
+current detailed mir100_ref model, build and Gazebo spawn are
+verified; the full navigation regression has NOT been re-run on
+this model yet.
 
-To re-run the automated goal test (after the sim is up):
-ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST python3 scripts/test_navigation.py --goals 6,0 6,2
+To re-run the automated goal test (after the sim is up, in a second
+terminal; cd into ROS_mir100 first):
+  cd ROS_mir100
+  source /opt/ros/jazzy/setup.bash
+  source install/setup.bash
+  ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST python3 scripts/test_navigation.py --goals 6,0 6,2
 
 ----------------------------------------------------------------
 3. RUN THE HARDER WORLD (navigation test PENDING - not a ready demo)
@@ -79,7 +90,10 @@ not to demo navigation. It uses a conservative collision radius
 4. SAVE A MAP (optional)
 ----------------------------------------------------------------
 The launches build the map LIVE with SLAM Toolbox; no map file is
-loaded at startup. To save what SLAM built, in another terminal:
+loaded at startup. To save what SLAM built, open a new terminal:
+  cd ROS_mir100
+  source /opt/ros/jazzy/setup.bash
+  source install/setup.bash
   bash src/mir100_navigation/scripts/save_map.sh
 The saved map lands in src/mir100_navigation/maps/.
 
@@ -103,7 +117,7 @@ Robot meshes (STL):
   src/mir_description/meshes/collision/                     <- simplified collision meshes
 
 Gazebo worlds (scene descriptions, SDF - these are NOT occupancy maps):
-  src/mir_description/worlds/obstacles.sdf   <- the verified obstacle room
+  src/mir_description/worlds/obstacles.sdf   <- the obstacle room (see status in section 2)
   src/mir_description/worlds/hard_world.sdf  <- harder maze (navigation pending)
   src/mir_description/worlds/empty.sdf
   src/mir_description/worlds/gen_hard_world.py <- regenerates hard_world.sdf byte-identically
@@ -137,16 +151,32 @@ Docs and test evidence:
   README.md, docs/TESTING.md, docs/*.json, docs/rviz-navigation.png
 
 NOT in this repo: mir100_assembled.stl (a single-piece export of the
-assembled robot for viewing/3D printing) is shared separately on Google
-Drive, because the repo carries the model as separate part meshes.
+assembled robot, for viewing the whole shell as one mesh) is shared
+separately on Google Drive, because the repo carries the model as
+separate part meshes.
 
 ----------------------------------------------------------------
-6. TYPICAL SESSION (startup order, 3 terminals)
+6. STOPPING AND RESTARTING (read this)
 ----------------------------------------------------------------
-Terminal 1: source /opt/ros/jazzy/setup.bash && source install/setup.bash && ./scripts/run_mir100.sh
-Terminal 2 (optional goal test): same two source lines, then the test_navigation.py command from section 2
-Terminal 3 (optional map save): bash src/mir100_navigation/scripts/save_map.sh
+- Stop any launch with Ctrl+C in its terminal. Give it a few seconds
+  to shut Gazebo down.
+- Do NOT run two of these launches at the same time (obstacle room,
+  harder world, or run_mir100.sh). One simulation at a time; stop the
+  old one fully before starting another.
+- If Gazebo or navigation behaves oddly after a stop, check for
+  leftover processes ("pgrep -fa 'gz sim'") and close them before
+  relaunching.
 
-Known harmless warnings: a few startup TF warnings before the first
-transform, and one RViz texture-unit message on the first map frame.
-Both clear on their own; wait for the map and active navigation.
+----------------------------------------------------------------
+7. WARNINGS: WHICH ARE NORMAL AND WHICH ARE REAL FAULTS
+----------------------------------------------------------------
+Normal at startup (clear on their own within seconds): a few TF
+warnings before the first transform arrives, and one RViz
+texture-unit message on the first map frame. Wait for the map and
+active navigation before sending a goal.
+
+NOT normal - do not just keep waiting: if the map never appears,
+the map->odom transform stays missing, or laser scans stop arriving,
+that is a real fault (this is exactly the failure currently being
+fixed on the harder world). Stop with Ctrl+C, relaunch once, and if
+it repeats, the setup needs fixing - it will not heal by waiting.
