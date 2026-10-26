@@ -4,7 +4,9 @@ A learning project using ROS 2 Jazzy and the detailed MiR100 model. Click a goal
 
 ## Current status and resolved errors
 
-**Verified in the simulated obstacle room:** consecutive goals at `(6, 0)` and `(6, 2)` both returned Nav2 **SUCCEEDED** with RViz open. The first route went around the obstacle. A third goal sent through the RViz toolbar and mouse drag also returned **SUCCEEDED**. See [repeat-goal results](docs/repeated-goals-test.json) and [test notes](docs/TESTING.md).
+**Verified in the simulated obstacle room (with the previous, simpler robot model):** consecutive goals at `(6, 0)` and `(6, 2)` both returned Nav2 **SUCCEEDED** with RViz open. The first route went around the obstacle. A third goal sent through the RViz toolbar and mouse drag also returned **SUCCEEDED**. See [repeat-goal results](docs/repeated-goals-test.json) and [test notes](docs/TESTING.md).
+
+With the current detailed `mir100_ref` model (the present Gazebo default), a clean-clone build and Gazebo spawn are verified; the full navigation regression above has not been re-run on this model yet.
 
 - **Sleep-related heartbeat reset:** the earlier controller timeout occurred at `06:59:38`, exactly when the kernel logged resume from sleep. `scripts/run_mir100.sh` now holds a temporary sleep/idle inhibitor while the simulation runs. It releases the inhibitor on exit and does not change persistent power settings.
 - **Discovery/readiness after network changes:** the launcher sets `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` for this single-laptop simulation. The regression test waits for live sensors, a map, and active controller/navigator states before sending goals.
@@ -16,7 +18,7 @@ The generic Nav2 panel may show **Localization: inactive** because this launch u
 
 These results cover the simulated static room. Physical hardware, moving people, and recovery after deliberately forcing the laptop to suspend are not verified. Restart the simulation after deliberate suspend. [The historical heartbeat failure](docs/second-goal-heartbeat-timeout.json) is retained for comparison.
 
-Tested on Ubuntu 24.04, ROS 2 Jazzy and Gazebo Harmonic. If `colcon build` fails with `option --editable not recognized` (seen with setuptools 80+ in conda/robostack environments), run `pip install "setuptools==72.2.0"` and rebuild.
+Developed and tested in a robostack (micromamba) ROS 2 Jazzy + Gazebo Harmonic environment on Linux. The apt commands below are the intended native Ubuntu 24.04 setup; that exact path has not been run end-to-end by the author. If `colcon build` fails with `option --editable not recognized` (seen with setuptools 80+ in conda/robostack environments), run `pip install "setuptools==72.2.0"` and rebuild.
 
 ## Install and build
 
@@ -24,7 +26,7 @@ Ubuntu 24.04 with ROS 2 Jazzy and Gazebo Harmonic:
 
 ```bash
 sudo apt update
-sudo apt install ros-jazzy-ros-gz ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-slam-toolbox ros-jazzy-robot-localization ros-jazzy-ros2launch
+sudo apt install python3-colcon-common-extensions ros-jazzy-ros-gz ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-slam-toolbox ros-jazzy-robot-localization ros-jazzy-ros2launch
 
 git clone https://github.com/muffedd/ROS_mir100.git
 cd ROS_mir100
