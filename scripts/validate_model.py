@@ -80,6 +80,11 @@ def main():
     if state['odom'] is None or state['gt'] is None:
         print('streams missing: odom=%s gt=%s' % (state['odom'] is not None, state['gt'] is not None))
         sys.exit(2)
+    # Baseline: let clock/odom/GT streaming settle before the timed profile,
+    # so trial measurements start from a stable baseline.
+    t_base = simnow()
+    while simnow() - t_base < 2.0:
+        rclpy.spin_once(n, timeout_sec=0.05)
 
     for ti in range(args.trials):
         s0 = snap()
