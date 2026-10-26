@@ -1,0 +1,59 @@
+{
+  "n_gt_samples": 2520,
+  "n_walls": 65,
+  "c1_ok": false,
+  "c1_leg_indices": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "c1_required": "1..15",
+  "c4_max_sample_step_m": 0.0377,
+  "c4_max_yaw_step_deg": 1.93,
+  "c2_all_legs_arrived": false,
+  "legs": [
+    {
+      "index": 1,
+      "status": 4,
+      "gt_dist_to_goal": 0.265,
+      "ok_c2": true
+    },
+    {
+      "index": 2,
+      "status": 4,
+      "gt_dist_to_goal": 0.205,
+      "ok_c2": true
+    },
+    {
+      "index": 3,
+      "status": 4,
+      "gt_dist_to_goal": 0.309,
+      "ok_c2": true
+    },
+    {
+      "index": 4,
+      "status": 4,
+      "gt_dist_to_goal": 0.221,
+      "ok_c2": true
+    },
+    {
+      "index": 5,
+      "status": 6,
+      "gt_dist_to_goal": 0.221,
+      "ok_c2": false
+    }
+  ],
+  "c3_final_dist": 7.572,
+  "c3_ok": false,
+  "c4_min_clearance": 0.0921,
+  "c4_ok": true,
+  "c4_min_at": {
+    "t_wall": 1793006798.544,
+    "x": -3.207347171068437,
+    "y": 1.4697077151174789,
+    "clearance": 0.0921
+  },
+  "c4_warn_band_samples(0-0.05m)": 0
+}

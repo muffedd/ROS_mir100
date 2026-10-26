@@ -1,0 +1,17 @@
+{"waypoints": "/downloads/run_20261026_1430/route_waypoints.json", "n_wp": 16, "leg_timeout": 120.0, "global_timeout": 900.0, "argv": ["/downloads/nav_driver5.py", "--waypoints", "/downloads/run_20261026_1430/route_waypoints.json", "--log", "/downloads/run_20261026_1430/driver.jsonl", "--leg-timeout", "120", "--global-timeout", "900", "--expect-start-index", "1", "--map-margin", "0.65"], "ev": "start", "t_sim": 0.0, "t_wall": 1793005264.486}
+{"stamp": 118.12, "robot": [0.0, -0.0], "ev": "tf_ready", "t_sim": 119.284, "t_wall": 1793005442.186}
+{"index": 0, "robot": [0.0, -0.0], "ev": "resume_at", "t_sim": 119.803, "t_wall": 1793005442.186}
+{"index": 1, "tgt": [-0.0, 1.12], "final": false, "stamp": [119, 803000000], "robot_at_send": [0.0, -0.0], "ev": "goal", "t_sim": 119.803, "t_wall": 1793005442.186}
+{"index": 1, "robot": [0.227, 0.469], "tf_stamp": 124.8, "ev": "progress", "t_sim": 124.804, "t_wall": 1793005453.503}
+{"index": 1, "tgt": [-0.0, 1.12], "status": 4, "dur_sim": 9.64, "robot_at_result": [0.059, 0.896], "tf_stamp": 129.42, "ev": "result", "t_sim": 129.444, "t_wall": 1793005464.196}
+{"index": 2, "tgt": [-0.0, 2.25], "final": false, "stamp": [129, 444000000], "robot_at_send": [0.059, 0.896], "ev": "goal", "t_sim": 129.444, "t_wall": 1793005464.197}
+{"index": 2, "robot": [-0.055, 1.045], "tf_stamp": 134.42, "ev": "progress", "t_sim": 134.445, "t_wall": 1793005475.648}
+{"index": 2, "robot": [-0.363, 1.938], "tf_stamp": 139.42, "ev": "progress", "t_sim": 139.446, "t_wall": 1793005487.353}
+{"index": 2, "tgt": [-0.0, 2.25], "status": 4, "dur_sim": 12.13, "robot_at_result": [-0.318, 2.19], "tf_stamp": 141.56, "ev": "result", "t_sim": 141.578, "t_wall": 1793005492.356}
+{"index": 3, "tgt": [0.75, 2.62], "final": false, "stamp": [141, 578000000], "robot_at_send": [-0.318, 2.19], "ev": "goal", "t_sim": 141.578, "t_wall": 1793005492.356}
+{"index": 3, "robot": [-0.299, 2.217], "tf_stamp": 146.56, "ev": "progress", "t_sim": 146.579, "t_wall": 1793005503.975}
+{"index": 3, "robot": [0.59, 2.784], "tf_stamp": 151.56, "ev": "progress", "t_sim": 151.58, "t_wall": 1793005515.92}
+{"index": 3, "tgt": [0.75, 2.62], "status": 4, "dur_sim": 12.53, "robot_at_result": [0.59, 2.784], "tf_stamp": 154.1, "ev": "result", "t_sim": 154.105, "t_wall": 1793005521.71}
+{"index": 4, "tgt": [1.12, 3.37], "final": false, "stamp": [154, 105000000], "robot_at_send": [0.59, 2.784], "ev": "goal", "t_sim": 154.105, "t_wall": 1793005521.711}
+{"index": 4, "tgt": [1.12, 3.37], "status": 6, "dur_sim": 3.42, "robot_at_result": [0.59, 2.784], "tf_stamp": 157.5, "ev": "result", "t_sim": 157.523, "t_wall": 1793005529.466}
+{"index": 4, "status": 6, "ev": "leg_failed", "t_sim": 157.523, "t_wall": 1793005529.466}

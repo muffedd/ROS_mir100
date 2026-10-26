@@ -51,9 +51,13 @@ Source: xacro -> URDF -> "gz sdf -p" (what the simulator loads).
 - Wheel separation 0.4452 m; no public OEM figure found; unverified.
 - Collision outline INCLUDING sensor pods: front laser at
   (0.4288, 0.2358) and back laser at (-0.3548, -0.2352), each a
-  0.16 x 0.16 m collision box. Worst-case corner radius from the
-  rotation origin: 0.599 m (front laser pod). The chassis box alone
-  needs 0.567 m. A geometry-consistent Nav2 robot_radius must be at
+  0.16 x 0.16 m collision box (pod joints rotate them 45 degrees;
+  rotated extent 0.591 m, unrotated 0.599 m - a consistent outline
+  must cover both). Worst-case corner radius from the rotation
+  origin: 0.599 m (front laser pod). The chassis box alone needs
+  0.567 m although its half-diagonal is only 0.536 m, because the
+  box center is offset +0.038 m ahead of the rotation origin
+  (front corners at x=0.4876: sqrt(0.4876^2+0.29^2)=0.567). A geometry-consistent Nav2 robot_radius must be at
   least ~0.60 m; the default 0.53 leaves the laser pods uncovered.
 - Masses as loaded: base_footprint lump 62.0 kg (base_link 58.0 +
   the two laser links at a declared 2.0 kg each); 2 drive wheels at
@@ -122,5 +126,14 @@ is unknown (no hardware data collected).
   ground-truth world geometry; unexplored-map autonomy is not claimed.
 - Conservative hard-test params (robot_radius 0.60 / inflation 0.90)
   have never completed a route; the passing legs used the default
-  0.53 / 0.55, which per section 2 does not enclose the sensor pods.
+  0.53 / 0.70, which per section 2 does not enclose the sensor pods.
+  (An earlier revision of this file said 0.55 - that was a reporting
+  error; the repo's actual default inflation_radius is 0.70 in both
+  costmaps. Geometry justifies enclosing the 0.599 m outline only;
+  inflation is separate tuning, never geometry-dictated.)
+- RECORDED RUNS 2026-10-26: two bounded pre-registered trials with a
+  footprint polygon (0.5988 m hull) replacing robot_radius BOTH
+  FAILED to complete the hard-world route (legs 4 and 5 aborted).
+  Full record: docs/HARD_WORLD_VALIDATION.txt. Hard-world navigation
+  is NOT validated.
 - No physical data collected.

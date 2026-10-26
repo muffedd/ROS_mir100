@@ -165,7 +165,13 @@ separate part meshes.
   old one fully before starting another.
 - If Gazebo or navigation behaves oddly after a stop, check for
   leftover processes ("pgrep -fa 'gz sim'") and close them before
-  relaunching.
+  relaunching. Leftover processes from an old run poison the new
+  one (clock/TF conflicts) - this actually happened in the recorded
+  hard-world trials. Scripted runs in scripts/recorded_run/ use
+  run_stack.sh / stop_stack.sh, which start the stack in its own
+  process group and stop only what they started.
+- Hard-world navigation status: NOT validated - two recorded trials
+  both failed to finish the route. See docs/HARD_WORLD_VALIDATION.txt.
 
 ----------------------------------------------------------------
 7. WARNINGS: WHICH ARE NORMAL AND WHICH ARE REAL FAULTS
@@ -177,6 +183,6 @@ active navigation before sending a goal.
 
 NOT normal - do not just keep waiting: if the map never appears,
 the map->odom transform stays missing, or laser scans stop arriving,
-that is a real fault (this is exactly the failure currently being
-fixed on the harder world). Stop with Ctrl+C, relaunch once, and if
+that is a real fault (this kind of fault contaminated a recorded
+hard-world trial (see docs/HARD_WORLD_VALIDATION.txt)). Stop with Ctrl+C, relaunch once, and if
 it repeats, the setup needs fixing - it will not heal by waiting.

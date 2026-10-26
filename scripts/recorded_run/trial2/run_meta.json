@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/downloads/run_recorder5.py",
+    "--world",
+    "hard",
+    "--model",
+    "mir100",
+    "--out",
+    "/downloads/run_20261026_trial2/recorder.jsonl",
+    "--sha-file",
+    "/home/sandbox/mir/ROS_mir100/install/mir_description/share/mir_description/worlds/hard_world.sdf",
+    "--sha-file",
+    "/downloads/nav_driver5.py",
+    "--sha-file",
+    "/downloads/run_20261026_trial2/nav2_params_recorded_footprint.yaml",
+    "--sha-file",
+    "/downloads/run_20261026_trial2/route_waypoints.json"
+  ],
+  "ROS_DOMAIN_ID": "42",
+  "GZ_PARTITION": "hardmap",
+  "t_wall_start": 1793006644.6679893,
+  "sha256": {
+    "/home/sandbox/mir/ROS_mir100/install/mir_description/share/mir_description/worlds/hard_world.sdf": "c4f94954429e88a43afa0a11e6ed4093a5a074d1fcc2267bc1da59898edd9656",
+    "/downloads/nav_driver5.py": "bacde3b5943a7dd324bf891a7d0f60ab2dc47fee55b910e664e153d5723a427f",
+    "/downloads/run_20261026_trial2/nav2_params_recorded_footprint.yaml": "9460ca53fee669729a99bd8f39fec6489e16f4b75b20086d7c115e3db22c1777",
+    "/downloads/run_20261026_trial2/route_waypoints.json": "65175678a2055ef2fc15147155faaff99dea55b08c0fd6397d532515f3d81471"
+  }
+}

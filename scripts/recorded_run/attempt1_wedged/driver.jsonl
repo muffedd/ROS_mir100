@@ -1,0 +1,2 @@
+{"waypoints": "/downloads/run_20261026_trial2/route_waypoints.json", "n_wp": 16, "leg_timeout": 120.0, "global_timeout": 900.0, "argv": ["/downloads/nav_driver5.py", "--waypoints", "/downloads/run_20261026_trial2/route_waypoints.json", "--log", "/downloads/run_20261026_trial2/driver.jsonl", "--leg-timeout", "120", "--global-timeout", "900", "--expect-start-index", "1", "--map-margin", "0.65"], "ev": "start", "t_sim": 0.0, "t_wall": 1793006324.639}
+{"stamp": 201.24, "robot": [0.0, -0.0], "ev": "tf_ready", "t_sim": 202.816, "t_wall": 1793006354.863}
