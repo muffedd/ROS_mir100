@@ -3,7 +3,7 @@ HARD-WORLD RECORDED NAVIGATION VALIDATION - FINAL RESULT
 Date: 2026-10-26. Outcome: FAILED (both bounded trials).
 Navigation on the hard world is NOT validated and is NOT
 presented as a reliable demo. This file is the complete record;
-no further trials were run after the user stopped retries.
+testing stopped after two trials, one with each route.
 ================================================================
 
 WHAT WAS TESTED
@@ -52,7 +52,9 @@ TRIAL 1 (route v1) - FAIL
 - Observed mechanism: 115 "RegulatedPurePursuitController detected
   collision ahead!" warnings and 7 "Controller patience exceeded"
   follow_path aborts while GT margin stayed >= 14.5 cm - the
-  controller refused in its costmap belief, no contact occurred.
+  controller refused in its costmap belief; the >= 14.5 cm GT
+  geometric margin is the only contact-related evidence (no contact
+  sensors exist in this world).
   The exact costmap cause is UNDETERMINED: cost values and local
   costmap contents were not captured. Contributing-factor
   hypotheses (unproven): route v1's diagonal legs are geometrically
@@ -110,8 +112,9 @@ REMAINING LIMITS
   not claimed. Swept clearance is sampled at 55.6 Hz with <= 0.42
   deg yaw steps (rotation-arc residual ~0.02 mm), not a continuous
   mathematical proof.
-- Testing was stopped after one bounded retry per route (2026-10-26);
-  both failures are preserved as the final state of this work.
+- Testing was stopped after two trials, one with each route
+  (2026-10-26); both failures are preserved as the final state of
+  this work.
 
 EVIDENCE MANIFEST (scripts/recorded_run/)
 - TEST_CRITERIA.md: pre-registered criteria (fixed before the runs)

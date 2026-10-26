@@ -80,11 +80,17 @@ ros2 launch mir100_navigation slam_navigation_hardtest.launch.py gui:=false laun
 
 Drop the two "false" arguments to open Gazebo and RViz.
 This launches the three-room maze world and spawns the robot at the
-start pose. Status: the robot builds and spawns correctly, but the
-autonomous navigation run still stops with transform/scan timing
-errors and is being fixed. Use it to inspect the world and robot,
-not to demo navigation. It uses a conservative collision radius
-(0.60 m) from config/nav2_params_hardtest.yaml.
+start pose. Status: the robot builds and spawns correctly. The
+older hard-test profile (robot_radius 0.60 / inflation 0.90 from
+config/nav2_params_hardtest.yaml) never completed a route. The
+recorded 2026-10-26 trials used a footprint polygon (0.5988 m hull)
+with the repo's actual inflation 0.70 and BOTH failed: the
+controller aborted mid-route (legs 4 and 5 of 15) after repeated
+"collision ahead" refusals; ground truth showed >= 9 cm geometric
+margin to walls, and the exact costmap cause is undetermined.
+Hard-world navigation is NOT validated - use this world to inspect
+the world and robot, not to demo navigation. Full record:
+docs/HARD_WORLD_VALIDATION.txt.
 
 ----------------------------------------------------------------
 4. SAVE A MAP (optional)
