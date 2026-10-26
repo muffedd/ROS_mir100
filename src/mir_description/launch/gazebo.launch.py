@@ -1,5 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, SetEnvironmentVariable, TimerAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, EnvironmentVariable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -15,7 +16,7 @@ def generate_launch_description():
     yaw = LaunchConfiguration("yaw")
     package_share = FindPackageShare("mir_description")
     xacro_file = PathJoinSubstitution(
-        [package_share, "urdf", "mir_ros2.urdf.xacro"]
+        [package_share, "urdf", "mir100_custom.urdf.xacro"]
     )
     robot_description = Command(["xacro", " ", xacro_file])
     ros_gz_launch = PathJoinSubstitution(
@@ -34,6 +35,11 @@ def generate_launch_description():
             DeclareLaunchArgument("y", default_value="0.0"),
             DeclareLaunchArgument("z", default_value="0.15"),
             DeclareLaunchArgument("yaw", default_value="0.0"),
+            DeclareLaunchArgument(
+                "gui",
+                default_value="true",
+                description="Launch the Gazebo GUI client; set false for headless runs.",
+            ),
             SetEnvironmentVariable(
                 name="GZ_SIM_RESOURCE_PATH",
                 value=[
@@ -62,6 +68,7 @@ def generate_launch_description():
             ),
             TimerAction(
                 period=5.0,
+                condition=IfCondition(LaunchConfiguration("gui")),
                 actions=[
                     ExecuteProcess(
                         cmd=["gz", "sim", "--force-version", "8", "-g", "-r", world],
