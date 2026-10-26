@@ -1,0 +1,100 @@
+================================================================
+MiR100 SIMULATION MODEL - BOUNDED VALIDATION REPORT
+Date: 2026-10-26. Model: mir100_ref (repo head at test time: 872d847).
+Scope: SIMULATION self-consistency only (command -> odometry ->
+Gazebo ground truth). This is NOT physical validation: no hardware
+MiR100 data exists, so no digital-twin claim is made or implied.
+================================================================
+
+----------------------------------------------------------------
+1. WHAT WAS CHECKED, WITH PASS CRITERIA UP FRONT
+----------------------------------------------------------------
+A. Static configuration audit (no pass/fail; documentation of fact):
+   geometry, masses, inertias, joints, drive plugin, sensors, as
+   loaded by the simulator (xacro -> URDF -> "gz sdf -p" runtime SDF).
+B. Straight-line motion: command 0.2 m/s for 10.0 sim-seconds,
+   3 trials. Observation criteria only: odometry distance, Gazebo
+   ground-truth (GT) distance, lateral drift, heading change.
+C. In-place turn: command 0.5 rad/s for 6.283 sim-seconds (180 deg
+   commanded), 3 trials + 1 instrumented diagnostic run logging wheel
+   joint velocities and caster swivel angles.
+Reproduction: all runs headless ("gui:=false"), empty world,
+bridges: /clock, /cmd_vel, /odom (+/joint_states for C). Raw CSV
+logs retained with this report's numbers.
+
+----------------------------------------------------------------
+2. STATIC AUDIT (actual runtime SDF)
+----------------------------------------------------------------
+- Footprint collision box: 0.9 x 0.58 m. OEM spec sheet: 890 x 580 mm.
+  NOT an exact match: model is 10 mm longer. (Spec source: MiR100
+  technical specification PDF, howtorobot.com mirror.)
+- Drive wheel radius 0.0625 m = OEM nominal 125 mm diameter.
+  Nominal match only; no tolerance comparison possible.
+- Wheel separation 0.4452 m. No public OEM figure; UNVERIFIED.
+- Masses as loaded: base_footprint lump 62.0 kg (base_link 58.0 +
+  front/back laser links 2.0 kg each, lumped via fixed joints);
+  2 drive wheels 1.0 kg each; 4 caster assemblies ~1.31 kg each.
+  TOTAL 69.239 kg vs OEM 70 kg: 1.1% under, COINCIDENTAL (declared
+  approximations, not tuned to the spec sheet).
+- Decorative mirref visual links: massless (no inertial; lumped at
+  zero mass). Valid URDF; zero dynamics impact by construction.
+- Inertias: uniform-box (base), cylinder (wheels), explicit tensor
+  (caster bases). Formula approximations.
+- Drive: gz-sim DiffDrive; max linear accel 1.0 m/s^2; max angular
+  accel 1.5 rad/s^2; odom at 50 Hz.
+- Friction: the model specifies NO surface friction. Per the SDFormat
+  specification (friction element, sdformat.org) the ODE mu/mu2
+  default is 1.0; the runs therefore used default friction. The old
+  mu=200 macro in the repo is libgazebo_ros-only and does not apply.
+- Scanners: 2x gpu_lidar, 541 samples, -2.2689..+2.3562 rad (~265 deg),
+  0.05-29.0 m, 12.5 Hz CONFIGURED target (achieved rate not measured
+  here). Earlier live checks: zero self-hits; obstacle response within
+  0.03 m of geometric prediction on both scanners.
+
+----------------------------------------------------------------
+3. RUNTIME RESULTS (measured; one operating point each)
+----------------------------------------------------------------
+STRAIGHT (0.2 m/s, 10 s, 3/3 trials identical):
+  odometry 1.980 m | GT 1.985 m | odom-GT gap 0.005 m (0.25%)
+  lateral drift 0.000 m | heading change 0.00 deg
+  Command-vs-GT -0.75%, consistent with the 1.0 m/s^2 accel ramp.
+TURN (0.5 rad/s, 6.283 s; commanded integral 180.0 deg):
+  wheel-joint integral 175.0 deg (ramp truncation; /odom 175.3 deg
+  faithfully reports wheel rotation)
+  GT body rotation: first turn after straight travel 147.3 deg;
+  subsequent turns with casters already tangent 164.0 deg (3/3
+  repeatable across runs)
+  -> wheel/body disagreement: 28 deg on the first turn, 11 deg
+  steady-state. Measured caster swivels approach the correct tangent
+  angles (within ~7 deg) but start straight-travel-aligned and scrub
+  while swiveling in.
+INTERPRETATION (bounded): the command -> wheels -> odometry chain is
+faithful. The wheel/body disagreement is CONSISTENT WITH wheel-ground
+and caster scrub slip under default friction. Whether this matches
+real MiR100 physics is UNKNOWN (no hardware data); call it a measured
+simulation behavior, not validated real-physics fidelity.
+
+----------------------------------------------------------------
+4. KNOWN LIMITATIONS (all open)
+----------------------------------------------------------------
+- Rotation: body under-rotates vs wheel odometry by ~6% steady-state
+  and ~16% on the first turn after straight travel (slip/scrub).
+  Odometry-only rotation accuracy is limited accordingly.
+- Single operating points tested (0.2 m/s; 0.5 rad/s). No speed sweep.
+- Hard-map guided route: completed WITH 4 aborts + BT recoveries;
+  GT goal error 0.589 m; 559 unexplained repeat goals in the session
+  (cause under reconciliation); no contact record exists.
+- Conservative hard-test params (robot_radius 0.60 / inflation 0.90)
+  have never completed a route; the completing run used defaults.
+- Physical validation absent by definition.
+
+----------------------------------------------------------------
+5. QA CORRECTIONS LEDGER (supersedes earlier claims)
+----------------------------------------------------------------
+- RETRACTED "inertial-less decorative links added +4 kg default mass
+  (unintended bug)": arithmetic error; actual lumping is the two
+  2.0 kg laser links; decorative links are massless.
+- RETRACTED "footprint exact match": see section 2 (+10 mm length).
+- RETRACTED "EKF/SLAM compensates rotation slip": unsupported; not
+  measured, and the EKF fuses wheel odometry only.
+- This report's numbers supersede any earlier session claims.
