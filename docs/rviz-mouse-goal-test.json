@@ -1,0 +1,21 @@
+{
+  "input": "RViz Nav2 Goal toolbar and map mouse drag",
+  "requested_goal_approx": [
+    6,
+    1
+  ],
+  "goal_id": "718630836a6c9d4d2cfc08207f807015",
+  "status": 4,
+  "pose": [
+    6.351175372124783,
+    0.5571876935377461
+  ],
+  "recoveries": 0,
+  "wall_seconds": 39.108136726999874,
+  "success": true,
+  "server_logged_goal": [
+    6.15,
+    1.0
+  ],
+  "note": "Mouse-event goal confirmed in the Nav2 server log; feedback pose is the last sampled feedback, not a final localization measurement."
+}

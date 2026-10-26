@@ -56,7 +56,7 @@ def generate_launch_description():
         [FindPackageShare("mir100_navigation"), "config", "ekf.yaml"]
     )
     rviz_config = PathJoinSubstitution(
-        [FindPackageShare("nav2_bringup"), "rviz", "nav2_default_view.rviz"]
+        [FindPackageShare("mir100_navigation"), "rviz", "navigation.rviz"]
     )
 
     return LaunchDescription(
