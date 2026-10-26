@@ -16,7 +16,7 @@ def generate_launch_description():
     yaw = LaunchConfiguration("yaw")
     package_share = FindPackageShare("mir_description")
     xacro_file = PathJoinSubstitution(
-        [package_share, "urdf", "mir100_custom.urdf.xacro"]
+        [package_share, "urdf", "mir100_ref.urdf.xacro"]
     )
     robot_description = Command(["xacro", " ", xacro_file])
     ros_gz_launch = PathJoinSubstitution(
